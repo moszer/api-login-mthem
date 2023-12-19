@@ -22,6 +22,7 @@ app.post('/checkToken', auth, checkToken)
 
 
 const ipAddress = '172.20.10.4'; // replace with your computer's local IP
-app.listen(port, ipAddress,() => {
+
+app.listen(port,() => {
   console.log(`Server is running on http://${ipAddress}:${port}`);
 });
