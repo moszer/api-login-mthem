@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../Models/User.js');
 const jwt = require('jsonwebtoken');
 const Product = require('../Models/Products.js')
+const stripe = require('stripe')('sk_test_51OG3ONAEKN9WuSMCKd6q4JznCKuooUlbzuJ2dbbz1PvGZxdXGpIJz1FKFkcQgILQhSjANkvHCPZXte3m26LnhzY300BXKrQt3v');
 
 //register
 exports.register = async (req, res) => {
@@ -53,7 +54,8 @@ exports.login = async (req, res) => {
                     }
                 }
                 //generate token
-                jwt.sign(payload, "mosnajaaa", {expiresIn: 20}, (err, token) => {
+                const expiresInInSeconds = 15 * 24 * 60 * 60;
+                jwt.sign(payload, "mosnajaaa", {expiresIn: expiresInInSeconds}, (err, token) => {
                     if(err) throw err;
                     res.json({token,payload})
                 })
@@ -91,7 +93,7 @@ exports.products = async (req, res) => {
             username: user._id, // Use the _id of the user as a reference
         });
 
-        await product.save();
+        product.save();
 
 
         console.log(user)
@@ -126,3 +128,32 @@ exports.getproducts = async (req, res) => {
 exports.checkToken = async (req, res) => {
   return res.send("Have a token")
 }
+
+exports.purchase = async (req, res) => {
+    try {
+      // Extract quantity from the request bodys
+      const { quantity, domain } = req.body;
+  
+      // Create a Stripe Checkout session
+      const session = await stripe.checkout.sessions.create({
+        payment_method_types: ['promptpay'],
+        line_items: [
+          {
+            price: 'price_1OPmV1AEKN9WuSMCUH1lxate',
+            quantity: parseInt(quantity, 10),
+          },
+        ],
+        mode: 'payment',
+        success_url: `${domain}?success=true`,
+        cancel_url: `${domain}?canceled=true`,
+      });
+  
+      // Respond with the Stripe Checkout session URL
+      res.json({ url: session.url });
+    } catch (error) {
+      console.error('Error creating checkout session:', error);
+  
+      // Respond with an error message
+      res.status(500).json({ error: 'Internal server error' });
+    }
+  };
