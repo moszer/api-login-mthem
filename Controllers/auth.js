@@ -157,3 +157,25 @@ exports.purchase = async (req, res) => {
       res.status(500).json({ error: 'Internal server error' });
     }
   };
+
+exports.tryproducts = async (req, res) => {
+    try {
+        // Your secret key to sign the token
+        const secretKey = 'mosnajaaa';
+        const validate = req.body.day
+        const username = req.body.username
+
+        // Define the payload (claims) for the token
+        const payload = {
+            sub: username,  // Subject (user ID)
+            exp: Math.floor(Date.now() / 1000) + (validate * 24 * 60 * 60)  // Expiration time (2 days from now)
+        };
+
+        // Generate the JWT token
+        const token = jwt.sign(payload, secretKey, { algorithm: 'HS256' });
+
+        res.json({token});
+    } catch (err) {
+        res.status(500).send(err.message);
+    }
+}
