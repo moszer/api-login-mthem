@@ -108,18 +108,23 @@ exports.products = async (req, res) => {
 //get product
 exports.getproducts = async (req, res) => {
     try {
-        //check user in db
+        // Check if the user exists in the database
         const user = await User.findOne({ username: req.body.username });
-        if(user === null){
-            return res.status(500).json({ message: 'Dont have user in database' });
+        if (user === null) {
+          return res.status(404).json({ message: 'User not found in the database' });
         }
-
-        const products = await Product.findOne({ username: user._id});
-
+    
+        // Retrieve all products for the user
+        const products = await Product.find({ username: user._id });
+    
+        if (products.length === 0) {
+          return res.status(404).json({ message: 'No products found for the user' });
+        }
+    
         res.status(200).json({ products });
-
       } catch (error) {
-        res.status(500).json({ message: 'ERR GET ITEMS' });
+        console.error(error);
+        res.status(500).json({ message: 'Error getting products' });
       }
 };
 
