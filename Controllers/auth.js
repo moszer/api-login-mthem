@@ -2,7 +2,7 @@ const bcrypt = require('bcryptjs');
 const User = require('../Models/User.js');
 const jwt = require('jsonwebtoken');
 const Product = require('../Models/Products.js')
-const stripe = require('stripe')('sk_test_51OG3ONAEKN9WuSMCKd6q4JznCKuooUlbzuJ2dbbz1PvGZxdXGpIJz1FKFkcQgILQhSjANkvHCPZXte3m26LnhzY300BXKrQt3v');
+const stripe = require('stripe')('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');
 
 //register
 exports.register = async (req, res) => {
