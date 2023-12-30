@@ -144,7 +144,7 @@ exports.purchase = async (req, res) => {
         payment_method_types: ['promptpay'],
         line_items: [
           {
-            price: 'price_1OPmV1AEKN9WuSMCUH1lxate',
+            price: 'price_1OSzviAEKN9WuSMCdeTmEvq7',
             quantity: parseInt(quantity, 10),
           },
         ],
